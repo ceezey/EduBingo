@@ -29,6 +29,7 @@
       ********************MAIN PROCESS OF THE PROGRAM******************* 
        PROCEDURE DIVISION.
        MAIN-PARAGRAPH.
+      *    Here medyo magulo pa ung main since nag e-experiment pa aq hehe 
            PERFORM VARYING USER-CHOICE FROM 1 BY 1 UNTIL USER-CHOICE > 5
                MOVE "N" TO TASK-STATUS(USER-CHOICE)
            END-PERFORM.
