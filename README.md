@@ -1,0 +1,2 @@
+# EduBingo
+BSIT 2-2 - COBOL APP PROJECT (A.Y. 24-25)
