@@ -13,6 +13,5 @@ BSIT 2-2 - COBOL APP PROJECT (A.Y. 24-25)
     💬 Connect to Database: 
         • Use Schema SQL
         • Use MongoDB
-        • Self-Improvement 📖
         
     ⚡ Integrate JS to connect to HTML(DUNNO HOW THIS WORKS PA)
