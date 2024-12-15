@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Management System - OTP Sent!</title>
+    <!-- google font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- main css -->
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/entry-page.css" />
+  </head>
+  <body>
+    <div class="row height-full">
+      <!-- left side -->
+      <div
+        class="left-column flex flex-column height-full justify-center items-center"
+      >
+        <h1 class="welcoming-title">Your OTP has been sent!</h1>
+        <form class="form" autocomplete="off" action="./success-otp.html">
+          <p class="forgot-password-reminder"> 
+            Please check your inbox and enter it below to proceed.
+          </p>
+          <label for="number" class="label">Code</label>
+          <input type="number" name="number" id="number" class="input" required />
+          <button
+            type="submit"
+            class="button regular-button pink-background cta-btn" 
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+      <!-- right side -->
+      <div class="right-column"></div>
+    </div>
+  </body>
+</html>
