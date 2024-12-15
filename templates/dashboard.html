@@ -13,8 +13,8 @@
       rel="stylesheet"
     />
     <!-- main css -->
-    <link rel="stylesheet" href="../css/main.css" />
-    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../static/css/main.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
   </head>
   <body>
     <!-- Because body has height 100%, we need a container to wrap the individual 
@@ -41,7 +41,8 @@
             >
               Add task
             </button>
-            <button class="sign-out-cta">Sign out</button>
+            <button method="post" action="signout" type="submit"
+            class="sign-out-cta">Sign out</button>
           </div>
         </div>
       </div>
@@ -627,6 +628,6 @@
     <!-- import IconifyIcon web component -->
     <script src="https://code.iconify.design/iconify-icon/1.0.5/iconify-icon.min.js"></script>
     <!-- js -->
-    <script src="/main.js"></script>
+    <script src="/static/js/main.js"></script>
   </body>
 </html>
