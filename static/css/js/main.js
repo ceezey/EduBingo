@@ -7,6 +7,8 @@ const setTaskOverlay = document.getElementById("set-task-overlay");
 const closeButtons = document.querySelectorAll(".close-button");
 const statusSelect = document.getElementById("status-select");
 const statusDropdown = document.getElementById("status-dropdown");
+const radioInputs = document.querySelectorAll(".radio-input");
+const statusDisplay = statusSelect.querySelector("span");
 const taskItems = document.querySelectorAll(".task-item");
 const viewTaskOverlay = document.getElementById("view-task-overlay");
 const deleteTaskCTA = document.getElementById("delete-task-cta");
@@ -53,9 +55,34 @@ closeButtons.forEach((button) => {
   });
 });
 
-// open status dropdown
-statusSelect.addEventListener("click", () => {
+ // Function to toggle the dropdown visibility
+ const toggleDropdown = () => {
   statusDropdown.classList.toggle("hide");
+};
+
+// Close the dropdown when clicking outside
+const closeDropdown = (event) => {
+  if (
+    !statusSelect.contains(event.target) &&
+    !statusDropdown.contains(event.target)
+  ) {
+    statusDropdown.classList.add("hide");
+  }
+};
+
+// Update the displayed status when an option is clicked
+const updateStatus = (event) => {
+  const selectedValue = event.target.value;
+  statusDisplay.textContent = selectedValue; // Update the display text
+  toggleDropdown(); // Hide the dropdown
+};
+
+// Add event listeners
+statusSelect.addEventListener("click", toggleDropdown);
+document.addEventListener("click", closeDropdown);
+
+radioInputs.forEach((input) => {
+  input.addEventListener("change", updateStatus);
 });
 
 // click a task

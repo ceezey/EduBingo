@@ -21,7 +21,7 @@ def addtask():
 
         # Save the task to a file
         with open(TASK_FILE, "a") as file:
-            file.write(f"{label},{date}\n")
+            file.write(f"{label}, {date}\n")
             return jsonify({"message": "Task added successfully", "task": label})
     
     except Exception as e:

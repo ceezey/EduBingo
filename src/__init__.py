@@ -6,6 +6,7 @@ CREDENTIALS_FILE = os.path.join(os.path.dirname(__file__), '../ACCOUNT-FILE.dat'
 TASK_FILE = os.path.join(os.path.dirname(__file__), '../TASK-FILE.dat')
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
+app.config['SECRET_KEY'] = os.urandom(99)
 
 def init():
     from .login import user # Adjust the import path according to your project structure
