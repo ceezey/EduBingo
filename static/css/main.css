@@ -214,6 +214,11 @@ body {
   margin-bottom: var(--space-8);
 }
 
+.arrow-icon {
+  pointer-events: auto; /* Ensure click events work */
+  cursor: pointer;      /* Show pointer cursor on hover */
+}
+
 .status-dropdown {
   border: 2px solid var(--black);
   border-radius: var(--radius-8);

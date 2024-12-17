@@ -1,244 +1,218 @@
+import { openOverlay, closeOverlay } from "./main.js";
 document.addEventListener("DOMContentLoaded", () => {
-    const taskContainer = document.getElementById("TaskContainer");
-    const addTask = document.querySelector("addButton"); // Fix selector
-    const textInput = document.getElementById("name"); // Task Name
-    const dayInput = document.getElementById("due-date-day");
-    const monthInput = document.getElementById("due-date-month");
-    const yearInput = document.getElementById("due-date-year");
-    const combinedDateInput = document.getElementById("combined-due-date");
-    const taskDescription = document.getElementById("description"); // Task Description
-    const toDo = document.getElementById("to-do-radio");
-    const doing = document.getElementById("doing-radio");
-    const done = document.getElementById("done-radio");
+    const addForm = document.getElementById("add");
 
-    // Function to generate a unique numeric ID
-    const generateNumericID = () => {
-        return Date.now() + Math.floor(Math.random() * 1000);
-    };
-
-    // Function to get and combine day, month, and year
-    const getCombinedDate = () => {
-        const day = dayInput.value.padStart(2, "0"); // Ensure two digits
-        const month = monthInput.value.padStart(2, "0");
-        const year = yearInput.value;
-
-        if (year && month && day) {
-            return `${year}-${month}-${day}`; // Return YYYY-MM-DD format
-        } else {
-            return ""; // Return empty if any field is missing
-        }
-    };
-
-    // Function to determine the task status
-    const getTaskStatus = () => {
-        if (toDo.checked) return "To-Do";
-        if (doing.checked) return "Doing";
-        if (done.checked) return "Done";
-        return "Unknown"; // Default status
-    };
-
-    // Function to handle data submission
-    const saveData = () => {
-        event.preventDefault(); // Prevent default form submission
-
-        const taskName = textInput.value.trim(); // Task Name
-        const description = taskDescription.value.trim(); // Task Description
-        const combinedDate = getCombinedDate(); // Combined Due Date
-        const status = getTaskStatus(); // Task Status
-
-        // Validate input fields
-        if (!taskName || !combinedDate || !status) {
-            swal({
-                title: "Error",
-                text: "Please enter task name, due date, and select status!",
-                icon: "error",
-            });
-            return;
-        }
-
-        // Generate a unique numeric ID
-        const id = generateNumericID();
-
-        // Create a new object representing the to-do task
-        const task = {
-            id: id,
-            name: taskName,
-            description: description,
-            date: combinedDate,
-            status: status,
-            completed: status === "Done", // Auto-mark as completed if status is "Done"
-            timestamp: Date.now(),
+    // Form submission event listener
+    addForm.addEventListener("submit", async function (event) {
+        event.preventDefault();  // Prevent form submission
+    
+        const taskName = document.getElementById("name"); // Task Name
+        const dayInput = document.getElementById("due-date-day");
+        const monthInput = document.getElementById("due-date-month");
+        const yearInput = document.getElementById("due-date-year");
+        const taskDescription = document.getElementById("description"); // Task Description
+        const generateNumericID = () => Date.now() + Math.floor(Math.random() * 1000);
+    
+        const getCombinedDate = () => {
+            const day = dayInput.value.padStart(2, "0"); // Ensure two digits
+            const month = monthInput.value.padStart(2, "0");
+            const year = yearInput.value;
+            return year && month && day ? `${year}-${month}-${day}` : "";  // Return empty if any field is missing
+        };
+    
+        // Function to get the selected status
+        const getTaskStatus = () => {
+            const radios = document.getElementsByName("status-option");  // Get all radio buttons with name 'status-option'
+            
+            for (let radio of radios) {
+                if (radio.checked) {
+                    return radio.value;  // Return the value of the selected radio button
+                }
+            }
+            
+            return null; // Return null if no radio button is selected
         };
 
-        // Save the JSON data to LocalStorage
-        localStorage.setItem(id, JSON.stringify(task));
-
-        // // Clear the input fields after saving
-        // textInput.value = "";
-        // taskDescription.value = "";
-        // dayInput.value = "";
-        // monthInput.value = "";
-        // yearInput.value = "";
-        // toDo.checked = false;
-        // doing.checked = false;
-        // done.checked = false;
-
-        // Display success message and refresh task list
-        swal({
-            title: "Success",
-            text: "Task successfully added!",
-            icon: "success",
+        // Make a POST API fetch request to the backend
+        response = fetch("/addtask", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: generateNumericID(),
+                name: taskName.value,
+                description: taskDescription.value,
+                date: getCombinedDate(),
+                status: getTaskStatus(),
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Handle non-200 responses
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json(); // Parse as JSON
+        })
+        .then(data => {
+            if (data.status === "success") {
+                alert("Task Successfully Added!!!.");
+                window.location.href = "/dashboard.html"; // Redirect to homepage or login page
+            } else if (data.status === "error") {
+                alert(`Error: ${data.message}`); // Show error message
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred, please try again.");
         });
+    });
 
-        // displayTasks(); // Call a function to display the tasks
+    // Function to fetch tasks based on category
+    const fetchTasks = () => {
+        fetch("/tasks")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse as JSON
+            })
+            .then(data => {
+                if (data.status === "success" && Array.isArray(data.tasks)) {
+                    data.tasks.forEach(task => displayTasks(task)); // Display each task
+                } else {
+                    console.error("Error fetching tasks or no tasks available.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while fetching tasks.");
+            });
     };
 
-    if (addTask) {
-        addTask.addEventListener("submit", saveData);
-    } else {
-        console.error("addTask element not found.");
-    }
-
-    // Event listener for the Add Task button
-    addTask.addEventListener("submit", saveData);
-
-    // Add keypress event listener to the text input and date input
-    taskName.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            saveData();
-        }
-    });
-
-    combinedDateInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            saveData();
-        }
-    });
-
-    textInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") 
-            saveData(event);
-    });
-    
-
-        // taskContainer.innerHTML = filteredTasks
-        //     .map(
-        //         (task) => `
-        //     <li class="task-item" id="${task.id}">
-        //         <button class="task-button">
-        //             <div>
-        //                 <p class="task-name">${task.name}</p>
-        //                 <p class="task-due-date">${task.date}</p>   
-        //             </div>
-        //             <!-- arrow -->
-        //             <iconify-icon
-        //                 icon="material-symbols:arrow-back-ios-rounded"
-        //                 style="color: black"
-        //                 width="18"
-        //                 height="18"
-        //                 class="arrow-icon"
-        //             ></iconify-icon>
-        //         </button>
-        //     </li>
-        // `
-        //     )
-        //     .join("");
-
-    tasks.forEach((task) => {
-        const taskItem = `
-            <li class="task-item" id="${task.id}">
-                <button class="task-button">
-                    <div>
-                        <p class="task-name">${task.name}</p>
-                        <p class="task-due-date">${task.date}</p>   
-                    </div>
-                    <!-- arrow -->
-                    <iconify-icon
-                        icon="material-symbols:arrow-back-ios-rounded"
-                        style="color: black"
-                        width="18"
-                        height="18"
-                        class="arrow-icon"
-                    ></iconify-icon>
-                </button>
-            </li>`;
-        taskContainer.insertAdjacentHTML("beforeend", taskItem);
-    });
-    
-    
-
-    // Attach event listener to the parent container
-    taskContainer.addEventListener("click", (event) => {
-        // Handle checkbox change
-        if (event.target.type === "checkbox" && event.target.name === "task") {
-            const taskId = event.target.id;
-            const task = tasks.find((task) => task.id.toString() === taskId);
-            if (task) {
-                task.completed = event.target.checked;
-                localStorage.setItem(task.id, JSON.stringify(task));
-                const marker = event.target.nextElementSibling;
-                if (marker.classList.contains("marker")) {
-                    marker.classList.toggle("done", task.completed);
-                }
+    const displayTasks = (task) => {
+        // Loop through both listView and boardView
+        const listViewContainers = ["listView", "boardView"];
+        listViewContainers.forEach((view) => {
+            const containerID = statusMapping[view][task.status];
+            const taskContainer = document.getElementById(containerID);
+            console.log("Status Mapping for Task:", statusMapping);
+            if (!taskContainer) {
+                console.error(`Missing container for ${view}:`, task.status);
+                return;
             }
-        }
+    
+            // Create a new list item for the task
+            const listItem = document.createElement("li");
+            listItem.classList.add("task-item");
+            listItem.id = task.id;
+    
+            listItem.innerHTML = `
+                <li class="task-item">
+                    <button class="task-button">
+                        <div>
+                            <p class="task-name">${task.name}</p>
+                            <p class="task-due-date">${task.date}</p>
+                        </div>
+                        <iconify-icon
+                            icon="material-symbols:arrow-back-ios-rounded"
+                            style="color: black;"
+                            width="18"
+                            height="18"
+                            class="arrow-icon"
+                        ></iconify-icon>
+                    </button>
+                </li>
+            `;
 
-        // Handle delete icon click
-        if (event.target.classList.contains("bx-trash-alt")) {
-            const taskId = event.target.closest(".card").dataset.taskId;
-            swal({
-                title: "Delete current task?",
-                text: "Once deleted, you will not be able to recover this task!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    localStorage.removeItem(taskId);
-                    event.target.closest(".card").remove();
-                    swal("Poof! Your task has been deleted!", {
-                        icon: "success",
-                    });
-                }
+            // Append to the corresponding container
+            taskContainer.appendChild(listItem);
+
+             // Add click event listener to the arrow icon
+            const arrowIcon = listItem.querySelector(".arrow-icon");
+            arrowIcon.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent parent button click
+                console.log(`Arrow clicked for task: ${task.name}`);
+                // Add further actions here, like opening details or navigating
+                openOverlay();
             });
-        }
+        });
+    };
 
-        if (event.target.classList.contains("date")) {
-            const taskId = event.target.closest(".card").dataset.taskId;
-            const task = tasks.find((task) => task.id.toString() === taskId);
-    
-            if (task) {
-                // Trigger the date picker
-                document.getElementById('hiddenDatePicker').showPicker();
-    
-                // Listen for changes in the date picker
-                document.getElementById('hiddenDatePicker').addEventListener('change', function () {
-                    const selectedDate = this.value;
-    
-                    // Ask for confirmation before updating the date
-                    swal({
-                        title: "Are you sure?",
-                        text:  `Update the due date from ${task.date} to ${selectedDate}.`,
-                        icon: "info",
-                        buttons: ["Cancel", "Yes"],
-                    }).then((willChangeDate) => {
-                        if (willChangeDate) {
-                            // Update the date in local storage
-                            task.date = selectedDate;
-                            localStorage.setItem(taskId, JSON.stringify(task));
-    
-                            // Refresh the display
-                            displayTasks(currentSection);
-                        } else {
-                            // Reset the date picker if the user cancels
-                            document.getElementById('hiddenDatePicker').value = '';
-                        }
-                    });
-                });
+    const statusMapping = {
+        listView: {
+            "To do": "todo-task-list",      // IDs for List View
+            "Doing": "doing-task-list",
+            "Done": "done-task-list",
+        },
+        boardView: {
+            "To do": "todo-task-board",  // IDs for Board View
+            "Doing": "doing-task-board",
+            "Done": "done-task-board",
+        },
+    };
+
+    const changeStatus = (taskid, newStatus) => {
+        fetch('/change_status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                taskid: taskid,
+                status: newStatus
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Task status updated successfully!');
+                // Optionally, update the UI with the new status
+                const taskElement = document.getElementById(taskid);
+                if (taskElement) {
+                    const statusElement = taskElement.querySelector('.task-status');
+                    if (statusElement) {
+                        statusElement.textContent = newStatus;
+                    }
+                }
+            } else {
+                alert(`Error: ${data.message}`);
             }
-        }
-    });
-    showDivisionsWithDelay();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the task status.');
+        });
+    };    
+
+    const deleteTask = (taskid) => {
+        fetch('/delete_task', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskid: taskid }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Task deleted successfully!');
+                // Optionally, remove the task from the UI
+                const taskElement = document.getElementById(taskid);
+                if (taskElement) {
+                    taskElement.remove();
+                }
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the task.');
+        });
+    };
+
+    fetchTasks();
 });
 
     

@@ -9,124 +9,136 @@ nya = Blueprint('nya', __name__)
 def addtask():
     try:
         data = request.get_json()
-        category = data.get('category', 'todo').lower()  # Default to 'todo'
-        label = data('label')
-        date = data('date')
+        taskid = data.get("id")
+        name = data.get("name")
+        desc = data.get("description")
+        date = data.get("date")
+        status = data.get("status")
+        print(f"id:", {taskid})
+        print(f"name:", {name})
+        print(f"desc:", {desc})
+        print(f"date:", {date})
+        print(f"status:", {status})
 
-        if not label or not date:
-            return jsonify({"status": "error", "message": "Fields cannot be empty"})
-        
-        if category not in ['todo', 'doing', 'done']:
-            return jsonify({"status": "error", "message": "Invalid category"})
+         # Validate required fields
+        if not name or not date or not status:
+            return jsonify({"status": "error", "message": "Fields 'name', 'date', and 'status' cannot be empty"}), 400
 
-        # Save the task to a file
+        if status not in ['To do', 'Doing', 'Done']:
+            return jsonify({"status": "error", "message": "Invalid status"}), 409
+
+        # Save the task to a file (id, name, description, date, status)
         with open(TASK_FILE, "a") as file:
-            file.write(f"{label}, {date}\n")
-            return jsonify({"message": "Task added successfully", "task": label})
+            file.write(f"{taskid},{name},{desc},{date},{status}\n")
+        
+        return jsonify({"status": "success","message": "Task added successfully", "task": {"id": taskid, "name": name, "status": status}}), 201
     
     except Exception as e:
-        return jsonify({"message": "An error occurred", "error": str(e)})
+        return jsonify({"status": "error","message": "An error occurred", "error": str(e)}), 500
 
-@nya.route("/todo", methods=['GET'])
-def todo():
+@nya.route("/change_status", methods=['POST'])
+def change_status():
     """
-    Fetch all tasks categorized as 'To-Do'
-    """
-    return fetch_tasks_by_category('todo')
-
-
-@nya.route("/doing", methods=['GET'])
-def doing():
-    """
-    Fetch all tasks categorized as 'Doing'
-    """
-    return fetch_tasks_by_category('doing')
-
-
-@nya.route("/done", methods=['GET'])
-def done():
-    """
-    Fetch all tasks categorized as 'Done'
-    """
-    return fetch_tasks_by_category('done')
-
-@nya.route("/tasks", methods=['GET'])
-def get_all_tasks():
-    """
-    Fetch all tasks regardless of category
-    """
-    try:
-        tasks = []
-        with open(TASK_FILE, "r") as file:
-            for line in file:
-                category, label, date = line.strip().split(",")
-                tasks.append({"category": category, "label": label, "date": date})
-
-        return jsonify({"status": "success", "tasks": tasks})
-
-    except FileNotFoundError:
-        return jsonify({"status": "error", "message": "No tasks found"})
-
-    except Exception as e:
-        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)})
-
-@nya.route("/change_category", methods=['POST'])
-def change_category():
-    """
-    Change the category of an existing task
+    Change the status of an existing task.
     """
     try:
         data = request.get_json()
-        label = data.get('label')
-        new_category = data.get('new_category', 'todo').lower()
+        taskid = data.get("taskid")
+        new_status = data.get("status")
 
-        if not label or not new_category:
-            return jsonify({"status": "error", "message": "Fields cannot be empty"}), 400
+        if not taskid or not new_status:
+            return jsonify({"status": "error", "message": "Task ID and new status are required"}), 400
 
-        if new_category not in ['todo', 'doing', 'done']:
-            return jsonify({"status": "error", "message": "Invalid new category"}), 400
-
-        # Read tasks from the file and update the category
+        if new_status not in ['To do', 'Doing', 'Done']:
+            return jsonify({"status": "error", "message": "Invalid status"}), 400
+        
         tasks = []
         task_found = False
+        
         with open(TASK_FILE, "r") as file:
             for line in file:
-                category, task_label, date = line.strip().split(",")
-                if task_label == label:
-                    tasks.append(f"{new_category},{task_label},{date}\n")
+                fields = line.strip().split(",")
+                if fields[0] == taskid:  # Find the task by taskid
+                    fields[4] = new_status  # Update the status field
                     task_found = True
+                    tasks.append(",".join(fields) + "\n")
                 else:
-                    tasks.append(line)
-
+                    tasks.append(line)  # Keep the other tasks as they are
+        
         if not task_found:
             return jsonify({"status": "error", "message": "Task not found"}), 404
 
         # Write updated tasks back to the file
         with open(TASK_FILE, "w") as file:
             file.writelines(tasks)
-
-        return jsonify({"status": "success", "message": "Task category updated successfully", "task": label, "new_category": new_category}), 200
+        
+        return jsonify({"status": "success", "message": "Task status updated successfully", "taskid": taskid, "new_status": new_status}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
 
-
-def fetch_tasks_by_category(category):
+@nya.route("/delete_task", methods=['DELETE'])
+def delete_task():
     """
-    Fetch tasks from the file for a specific category
+    Delete a task by its taskid.
+    """
+    try:
+        data = request.get_json()
+        taskid = data.get("taskid")
+        
+        if not taskid:
+            return jsonify({"status": "error", "message": "Task ID is required"}), 400
+        
+        tasks = []
+        task_found = False
+        
+        with open(TASK_FILE, "r") as file:
+            for line in file:
+                fields = line.strip().split(",")
+                if fields[0] == taskid:  # Compare the taskid to the one in the file
+                    task_found = True
+                    continue  # Skip the line if it's the task we want to delete
+                tasks.append(line)  # Keep all other tasks
+        
+        if not task_found:
+            return jsonify({"status": "error", "message": "Task not found"}), 404
+        
+        with open(TASK_FILE, "w") as file:
+            file.writelines(tasks)  # Write the remaining tasks back to the file
+        
+        return jsonify({"status": "success", "message": "Task deleted successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
+
+@nya.route("/tasks", methods=['GET'])
+def get_all_tasks():
+    """
+    Fetch all tasks regardless of category with all fields dynamically.
     """
     try:
         tasks = []
         with open(TASK_FILE, "r") as file:
             for line in file:
-                task_category, label, date = line.strip().split(",")
-                if task_category == category:
-                    tasks.append({"label": label, "date": date})
+                # Dynamically split each line into fields
+                fields = line.strip().split(",")
 
-        return jsonify({"status": "success", "tasks": tasks})
+                # Assuming the file has a fixed order of fields:
+                # category, label, date, description, status, etc.
+                task = {
+                    "taskid": fields[0] if len(fields) > 0 else "N/A",
+                    "name": fields[1] if len(fields) > 1 else "N/A",
+                    "description": fields[2] if len(fields) > 2 else "N/A",
+                    "date": fields[3] if len(fields) > 3 else "N/A",
+                    "status": fields[4] if len(fields) > 4 else "N/A",
+                }
+
+                tasks.append(task)
+
+        return jsonify({"status": "success", "tasks": tasks}), 200
 
     except FileNotFoundError:
-        return jsonify({"status": "error", "message": "No tasks found"})
+        return jsonify({"status": "error", "message": "No tasks found"}), 400
 
     except Exception as e:
-        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)})
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500

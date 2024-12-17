@@ -52,7 +52,7 @@ def signup():
         data = request.get_json() # Retrieve JSON data
         email = data.get("email")
         password = data.get("password")
-        print(f"Email:", {email})
+        
         print(f"Password:", {password})
         
         a = email_exists(email) # Validate unique user

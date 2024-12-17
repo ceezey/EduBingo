@@ -96,42 +96,40 @@
         <div id="list-view" class="list-view">
           <div class="list-container pink">
             <h2 class="list-header">
-              <span class="circle pink-background"></span
-              ><span class="text">To do</span>
+              <span class="circle pink-background"></span>
+              <span class="text">To do</span>
             </h2>
-            <ul class="tasks-list" id="TaskContainer">
-              
+            <ul class="tasks-list pink" id="todo-task-list">
+
 
 
             </ul>
           </div>
+          <!-- list view -->
           <div class="list-container blue">
             <h2 class="list-header">
-              <span class="circle blue-background"></span
-              ><span class="text">Doing</span>
+              <span class="circle blue-background"></span>
+              <span class="text">Doing</span>
             </h2>
-            <ul class="tasks-list" id="TaskContainer">
-              
+            <ul class="tasks-list blue" id="doing-task-list">
+
 
 
             </ul>
           </div>
+          <!-- list view -->
           <div class="list-container green">
             <h2 class="list-header">
-              <span class="circle green-background"></span
-              ><span class="text">Done</span>
+              <span class="circle green-background"></span>
+              <span class="text">Done</span>
             </h2>
-            <ul class="tasks-list" id="TaskContainer">
-              
+            <ul class="tasks-list green" id="done-task-list">
+
 
 
             </ul>
           </div>
-        </div>
-
-
-
-        <!-- board view -->
+        <!-- Board View -->
         <div id="board-view" class="board-view hide">
           <!-- list -->
           <div>
@@ -139,7 +137,7 @@
               <span class="circle pink-background"></span
               ><span class="text">To do</span>
             </h2>
-            <ul class="tasks-list pink" id="TaskContainer">
+            <ul class="tasks-list" id="todo-task-board">
               
 
 
@@ -151,26 +149,21 @@
               <span class="circle blue-background"></span
               ><span class="text">Doing</span>
             </h2>
-            <ul class="tasks-list blue" id="TaskContainer">
-              
+            <ul class="tasks-list blue" id="doing-task-board">
 
-
-            </ul>
+            </ul>               
           </div>
           <!-- list -->
           <div>
             <h2 class="list-header">
-              <span class="circle green-background"></span
-              ><span class="text">Done</span>
+              <span class="circle green-background"></span>
+              <span class="text">Done</span>
             </h2>
-            <ul class="tasks-list green" id="TaskContainer">
-              
-
+            <ul class="tasks-list green" id="done-task-board">
 
             </ul>
           </div>
         </div>
-      </div>
     </div>
     <!-- add + update task -->
     <div id="set-task-overlay" class="overlay set-task-overlay hide">
@@ -187,7 +180,7 @@
           ></iconify-icon>
         </button>
         <h1 class="header">Add task</h1>
-        <form class="form" autocomplete="off">
+        <form method="post" id="add" class="form" autocomplete="off">
           <label for="name" class="label">Name</label>
           <input
             type="text"
@@ -255,10 +248,10 @@
 
           <h2 class="label">Status</h2>
           <div
-            id="status-select"
+            id="status-select" method="post"
             class="status-select white-background flex items-center justify-between cursor-pointer"
           >
-            <span>To do</span>
+            <span>Choose a Status</span>
             <iconify-icon
               icon="material-symbols:arrow-back-ios-rounded"
               style="color: black"
@@ -310,7 +303,7 @@
           </ul>
           <div class="text-center">
             <button
-              type="submit" id="addButton"
+              type="submit"
               class="button regular-button green-background cta-button"
             >
               Add task
@@ -379,8 +372,8 @@
     <!-- import IconifyIcon web component -->
     <script src="https://code.iconify.design/iconify-icon/1.0.5/iconify-icon.min.js"></script>
     <!-- js -->
-    <script src="../static/css/js/main.js"></script>
-    <script src="../static/css/js/dashboard.js"></script>
+    <script type="module" src="../static/css/js/main.js"></script>
+    <script type="module" src="../static/css/js/dashboard.js"></script>
     <script src="../static/css/js/login.js"></script>
   </body>
 </html>

@@ -45,15 +45,22 @@ addTaskCTA.addEventListener("click", () => {
   document.body.classList.add("overflow-hidden");
 });
 
-// close buttons inside overlays
-closeButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    activeOverlay.classList.add("hide");
-    activeOverlay = null;
-    // reenable scrolling
-    document.body.classList.remove("overflow-hidden");
+export function closeOverlay() {
+  // close buttons inside overlays
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeOverlay.classList.add("hide");
+      activeOverlay = null;
+      // reenable scrolling
+      document.body.classList.remove("overflow-hidden");
+    });
   });
-});
+  if (closeButtons) {
+    closeButtons.style.display = 'none';  // Make the overlay visible
+  } else {
+      console.error('Overlay not found');
+  }
+}
 
  // Function to toggle the dropdown visibility
  const toggleDropdown = () => {
@@ -85,15 +92,23 @@ radioInputs.forEach((input) => {
   input.addEventListener("change", updateStatus);
 });
 
-// click a task
-taskItems.forEach((task) => {
-  task.addEventListener("click", () => {
-    viewTaskOverlay.classList.remove("hide");
-    activeOverlay = viewTaskOverlay;
-    // disable scrolling for content behind the overlay
-    document.body.classList.add("overflow-hidden");
+export function openOverlay() {
+  // click a task
+  console.log('Overlay function triggered')
+  taskItems.forEach((task) => {
+    task.addEventListener("click", () => {
+      viewTaskOverlay.classList.remove("hide");
+      activeOverlay = viewTaskOverlay;
+      // disable scrolling for content behind the overlay
+      document.body.classList.add("overflow-hidden");
+    });
   });
-});
+  if (viewTaskOverlay) {
+    viewTaskOverlay.style.display = 'block';  // Make the overlay visible
+  } else {
+      console.error('Overlay not found');
+  }
+}
 
 // delete a task
 deleteTaskCTA.addEventListener("click", () => {
