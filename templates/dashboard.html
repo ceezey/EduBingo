@@ -15,6 +15,7 @@
     <!-- main css -->
     <link rel="stylesheet" href="../static/css/main.css" />
     <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <link rel="icon" href="../static/css/img/logo.png" type="image/png" />
   </head>
   <body>
     <!-- Because body has height 100%, we need a container to wrap the individual 
@@ -33,7 +34,10 @@
       <!-- header -->
       <div class="max-width-container">
         <div class="header flex items-center justify-between">
-          <h1 class="title">My tasks</h1>
+          <div class="flex items-center">
+            <img src="../static/css/img/logo.png" alt="Logo" class="logo" />
+            <h1 class="title">My tasks</h1>
+          </div>
           <div class="buttons-container">
             <button
               id="add-task-cta"
@@ -170,6 +174,7 @@
       <div class="overlay-content pink-background">
         <!-- close button -->
         <button
+          id="close-button"
           class="button circle-button blue-background flex justify-center items-center close-button"
         >
           <iconify-icon
@@ -327,19 +332,19 @@
           ></iconify-icon>
         </button>
         <h1 class="header no-margin">Name</h1>
-        <p class="value">some long task name</p>
+        <p class="value">Eat</p>
         <h1 class="header">Description</h1>
         <p class="value">
-          some long task namesome long task namesome long task name
+          3 times a day.
         </p>
         <div class="flex items-center">
           <h1 class="header min-width">Due date</h1>
-          <p class="value">January 7, 2020</p>
+          <p class="value">2025-01-20</p>
         </div>
         <div class="flex items-center">
           <h1 class="header min-width">Status</h1>
           <p class="value status-value">
-            <span class="circle blue-background"></span><span>Doing</span>
+            <span class="circle blue-background"></span><span>To do</span>
           </p>
         </div>
         <div class="control-buttons-container">
@@ -367,6 +372,24 @@
             ></iconify-icon>
           </button>
         </div>
+      </div>
+    </div>
+    <!-- How are you modal -->
+    <div id="how-are-you-modal" class="overlay">
+      <div class="overlay-content pink-background">
+        <h1 class="header">
+          How are you?
+          <iconify-icon icon="mdi:emoticon-happy-outline" style="color: black" width="26" height="26"></iconify-icon>
+        </h1>
+        <form id="how-are-you-form">
+          <input type="text" id="user-response" placeholder="I am happy to see you." class="input white-background" required/>
+          <div class="text-center">
+            <button type="submit" class="button regular-button green-background cta-button">Submit</button>
+          </div>
+        </form>
+        <button class="button circle-button blue-background flex justify-center items-center close-button" id="close-modal">
+          <iconify-icon icon="material-symbols:close-rounded" style="color: black" width="26" height="26"></iconify-icon>
+        </button>
       </div>
     </div>
     <!-- import IconifyIcon web component -->

@@ -215,4 +215,43 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchTasks();
 });
 
-    
+// MOOD TRACKER
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("how-are-you-modal");
+    const closeModalButton = document.getElementById("close-modal");
+    const form = document.getElementById("how-are-you-form");
+
+    // Show the modal when the page loads
+    modal.style.display = "grid";
+
+    // Close the modal when the close button is clicked
+    closeModalButton.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    // Handle form submission
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const userResponse = document.getElementById("user-response").value;
+      fetch("/save_mood", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ mood: userResponse }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "success") {
+            alert("Response saved successfully!");
+            modal.style.display = "none";
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred, please try again.");
+        });
+    });
+  });

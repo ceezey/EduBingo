@@ -142,3 +142,20 @@ def get_all_tasks():
 
     except Exception as e:
         return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
+
+@nya.route("/save_mood", methods=['POST'])
+def save_mood():
+    try:
+        data = request.get_json()
+        mood = data.get("mood")
+        
+        if not mood:
+            return jsonify({"status": "error", "message": "Mood cannot be empty"}), 400
+        
+        with open("MOOD-FILE.dat", "a") as file:
+            file.write(f"{mood}\n")
+        
+        return jsonify({"status": "success", "message": "Mood saved successfully"}), 201
+    
+    except Exception as e:
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500

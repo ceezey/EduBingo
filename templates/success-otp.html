@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Management System - Sign up page</title>
+    <title>Task Management System - Change password</title>
     <!-- google font: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,6 +15,7 @@
     <!-- main css -->
     <link rel="stylesheet" href="../static/css/main.css" />
     <link rel="stylesheet" href="../static/css/entry-page.css" />
+    <link rel="icon" href="../static/css/img/logo.png" type="image/png/>
   </head>
   <body>
     <div class="row height-full">
@@ -22,15 +23,9 @@
       <div
         class="left-column flex flex-column height-full justify-center items-center"
       >
-        <h1 class="welcoming-title">Create Your Account and Join Us!</h1>
-        <form class="form" autocomplete="off">
-          <p class="signup-reminder">
-            Sign up now to keep your tasks 
-            organized and effortlessly manage everything in one place!
-          </p>
-          <label for="email" class="label">Email</label>
-          <input type="email" name="email" id="email" class="input" required />
-
+        <img src="../static/css/img/logo.png" alt="Logo" class="logo-success-otp" />
+        <h1 class="welcoming-title">Make sure to remember your password.</h1>
+        <form class="form" autocomplete="off" onsubmit="return validatePasswords()">
           <label for="password" class="label">Password</label>
           <input
             type="password"
@@ -40,20 +35,53 @@
             required
           />
 
+          <label for="confirm-password" class="label">Confirm Password</label>
+          <input
+            type="password"
+            name="confirm-password"
+            id="confirm-password"
+            class="input"
+            required
+          />
+
+          <p id="error-message" class="error-message" style="display:none; color:red;">
+            Passwords do not match.
+          </p>
+          <p id="success-message" class="success-message" style="display:none; color:green;">
+            Password changed successfully. Redirecting to login...
+          </p>
+
           <button
             type="submit"
             class="button regular-button pink-background cta-btn"
           >
-            Sign up
+            Submit
           </button>
         </form>
-        <p class="login-prompt">
-          Already have an account?
-          <a href="/login.html" class="log-in-link">Log in</a>
-        </p>
       </div>
       <!-- right side -->
       <div class="right-column"></div>
     </div>
+    <script>
+      function validatePasswords() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+
+        if (password !== confirmPassword) {
+          errorMessage.style.display = 'block';
+          successMessage.style.display = 'none';
+          return false;
+        } else {
+          errorMessage.style.display = 'none';
+          successMessage.style.display = 'block';
+          setTimeout(() => {
+            window.location.href = '/login.html';
+          }, 2000);
+          return false;
+        }
+      }
+    </script>
   </body>
 </html>
