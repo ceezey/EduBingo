@@ -9,7 +9,7 @@ app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.config['SECRET_KEY'] = os.urandom(99)
 
 def init():
-    from .login import user # Adjust the import path according to your project structure
+    from .account import user # Adjust the import path according to your project structure
     app.register_blueprint(user)
 
     from .views import main  # Adjust the import path according to your project structure

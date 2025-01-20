@@ -1,8 +1,12 @@
 # from functools import wraps
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from . import CREDENTIALS_FILE
 from flask import (
     Blueprint, jsonify, request,
-    session
+    session, redirect, url_for
 )
 
 user = Blueprint('user', __name__)
@@ -83,6 +87,37 @@ def signout():
         return jsonify({"status": "success", "message": "Successfully logged out."}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+    
+@user.route('/send-otp', methods=['POST'])
+def send_otp():
+    email = request.form['email']
+    otp = random.randint(100000, 999999)
+    
+    # Email sending logic
+    sender_email = "your-email@example.com"
+    sender_password = "your-password"
+    subject = "Your OTP Code"
+    body = f"Your OTP code is {otp}"
+    
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+    
+    try:
+        smtp_server = smtplib.SMTP('smtp.example.com', 587)
+        smtp_server.starttls()
+        smtp_server.login(sender_email, sender_password)
+        smtp_server.sendmail(sender_email, email, msg.as_string())
+        smtp_server.quit()
+        return redirect(url_for('otp'))
+    except Exception as e:
+        return jsonify({'message': 'Failed to send OTP', 'error': str(e)}), 500
+
+@user.route('/otp')
+def otp():
+    return "OTP has been sent to your email address."
 
 # Helper Function: Validate Login Credentials
 def validate_login(email, password):
