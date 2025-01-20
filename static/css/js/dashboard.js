@@ -101,18 +101,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error(`Missing container for ${view}:`, task.status);
                 return;
             }
-    
+                    
+            // Close button for set task overlay
+            const closeSetTaskButton = document.getElementById("close-button");
+            closeSetTaskButton.addEventListener("click", () => {
+                const setTaskOverlay = document.getElementById("set-task-overlay");
+                setTaskOverlay.classList.add("hide");
+            });
+
             // Create a new list item for the task
             const listItem = document.createElement("li");
             listItem.classList.add("task-item");
             listItem.id = task.id;
+
+            // Format the task date
+            const formattedDate = new Date(task.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
     
             listItem.innerHTML = `
                 <li class="task-item">
                     <button class="task-button">
                         <div>
                             <p class="task-name">${task.name}</p>
-                            <p class="task-due-date">${task.date}</p>
+                            <span class="task-due-date">${formattedDate}</span>
                         </div>
                         <iconify-icon
                             icon="material-symbols:arrow-back-ios-rounded"
@@ -135,6 +149,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(`Arrow clicked for task: ${task.name}`);
                 // Add further actions here, like opening details or navigating
                 openOverlay();
+
+                // Create the task details HTML
+                const taskDetailsHTML = `
+                    <h1 class="header no-margin">Name</h1>
+                    <p id="task-name" class="value">${task.name}</p>
+                    <h1 class="header">Description</h1>
+                    <p id="task-description" class="value">${task.description}</p>
+                    <div class="flex items-center">
+                        <h1 class="header min-width">Due date</h1>
+                        <p class="value">${formattedDate}</p>
+                    </div>
+                    <div class="flex items-center">
+                        <h1 class="header min-width">Status</h1>
+                        <p class="value status-value">
+                            <span class="circle pink-background"></span><span>${task.status}</span>
+                        </p>
+                    </div>
+                `;
+
+                // Insert the task details HTML into the tasks-details div
+                const tasksDetailsDiv = document.getElementById("tasks-details");
+                tasksDetailsDiv.innerHTML = taskDetailsHTML;
+
+                // Add event listener to delete button
+                const deleteTaskButton = document.getElementById("delete-task-cta");
+                deleteTaskButton.addEventListener("click", () => {
+                    listItem.remove(); // Remove the corresponding li element
+                });
             });
         });
     };

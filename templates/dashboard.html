@@ -322,6 +322,7 @@
       <div class="overlay-content green-background">
         <!-- close button -->
         <button
+          id="close-button-vt"
           class="button circle-button blue-background flex justify-center items-center close-button"
         >
           <iconify-icon
@@ -331,22 +332,7 @@
             height="26"
           ></iconify-icon>
         </button>
-        <h1 class="header no-margin">Name</h1>
-        <p class="value">Eat</p>
-        <h1 class="header">Description</h1>
-        <p class="value">
-          3 times a day.
-        </p>
-        <div class="flex items-center">
-          <h1 class="header min-width">Due date</h1>
-          <p class="value">2025-01-20</p>
-        </div>
-        <div class="flex items-center">
-          <h1 class="header min-width">Status</h1>
-          <p class="value status-value">
-            <span class="circle blue-background"></span><span>To do</span>
-          </p>
-        </div>
+        <div id="tasks-details"></div>
         <div class="control-buttons-container">
           <!-- edit button -->
           <button
