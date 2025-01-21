@@ -104,9 +104,7 @@
               <span class="text">To do</span>
             </h2>
             <ul class="tasks-list pink" id="todo-task-list">
-
-
-
+              <span class="no-tasks-message">No tasks found.</span>
             </ul>
           </div>
           <!-- list view -->
@@ -116,9 +114,7 @@
               <span class="text">Doing</span>
             </h2>
             <ul class="tasks-list blue" id="doing-task-list">
-
-
-
+              <span class="no-tasks-message">No tasks found.</span>
             </ul>
           </div>
           <!-- list view -->
@@ -128,46 +124,18 @@
               <span class="text">Done</span>
             </h2>
             <ul class="tasks-list green" id="done-task-list">
-
-
-
-            </ul>
-          </div>
-        <!-- Board View -->
-        <div id="board-view" class="board-view hide">
-          <!-- list -->
-          <div>
-            <h2 class="list-header">
-              <span class="circle pink-background"></span
-              ><span class="text">To do</span>
-            </h2>
-            <ul class="tasks-list" id="todo-task-board">
-              
-
-
-            </ul>
-          </div>
-          <!-- list -->
-          <div>
-            <h2 class="list-header">
-              <span class="circle blue-background"></span
-              ><span class="text">Doing</span>
-            </h2>
-            <ul class="tasks-list blue" id="doing-task-board">
-
-            </ul>               
-          </div>
-          <!-- list -->
-          <div>
-            <h2 class="list-header">
-              <span class="circle green-background"></span>
-              <span class="text">Done</span>
-            </h2>
-            <ul class="tasks-list green" id="done-task-board">
-
+              <span class="no-tasks-message">No tasks found.</span>
             </ul>
           </div>
         </div>
+        <!-- Board View -->
+        <div id="board-view" class="board-view hide">
+          <div class="board-container">
+            <img src="../static/css/img/mascot.png" alt="Mascot" class="mascot" />
+            <img src="../static/css/img/board.png" alt="Board" class="board" />
+          </div>
+        </div>
+      </div>
     </div>
     <!-- add + update task -->
     <div id="set-task-overlay" class="overlay set-task-overlay hide">
@@ -333,13 +301,14 @@
           ></iconify-icon>
         </button>
         <div id="tasks-details"></div>
-        <div class="control-buttons-container">
+        <div class="control-buttons-container" style="display: none;">
           <!-- edit button -->
           <button
+            id="save-task-cta"
             class="button circle-button pink-background flex justify-center items-center"
           >
             <iconify-icon
-              icon="material-symbols:edit-rounded"
+              icon="material-symbols:save"
               style="color: black"
               width="24"
               height="24"

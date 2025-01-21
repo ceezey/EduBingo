@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             if (data.status === "success") {
-                alert("Task Successfully Added!!!.");
+                alert("Task Successfully Added!");
                 window.location.href = "/dashboard.html"; // Redirect to homepage or login page
             } else if (data.status === "error") {
                 alert(`Error: ${data.message}`); // Show error message
@@ -79,7 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(data => {
                 if (data.status === "success" && Array.isArray(data.tasks)) {
-                    data.tasks.forEach(task => displayTasks(task)); // Display each task
+                    if (data.tasks.length === 0) {
+                        // Show "No tasks found." message if no tasks are available
+                        const noTasksMessages = document.querySelectorAll(".no-tasks-message");
+                        noTasksMessages.forEach(message => message.style.display = "flex");
+                    } else {
+                        data.tasks.forEach(task => displayTasks(task)); // Display each task
+                    }
                 } else {
                     console.error("Error fetching tasks or no tasks available.");
                 }
@@ -109,6 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 setTaskOverlay.classList.add("hide");
             });
 
+            // Hide "No tasks found." message
+            const noTasksMessage = taskContainer.querySelector(".no-tasks-message");
+            if (noTasksMessage) {
+                noTasksMessage.style.display = "none";
+            }
+
             // Create a new list item for the task
             const listItem = document.createElement("li");
             listItem.classList.add("task-item");
@@ -129,11 +141,19 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span class="task-due-date">${formattedDate}</span>
                         </div>
                         <iconify-icon
-                            icon="material-symbols:arrow-back-ios-rounded"
-                            style="color: black;"
-                            width="18"
-                            height="18"
+                            icon="material-symbols:edit"
+                            style="color:rgb(224, 154, 24);"
+                            width="24"
+                            height="24"
                             class="arrow-icon"
+                        ></iconify-icon>
+                        <!-- delete button -->
+                        <iconify-icon
+                            icon="ic:round-delete"
+                            style="color: red"
+                            width="24"
+                            height="24"
+                            class="delete-icon"
                         ></iconify-icon>
                     </button>
                 </li>
@@ -142,41 +162,114 @@ document.addEventListener("DOMContentLoaded", () => {
             // Append to the corresponding container
             taskContainer.appendChild(listItem);
 
-             // Add click event listener to the arrow icon
+            // Add click event listener to the arrow icon
             const arrowIcon = listItem.querySelector(".arrow-icon");
             arrowIcon.addEventListener("click", (event) => {
                 event.stopPropagation(); // Prevent parent button click
                 console.log(`Arrow clicked for task: ${task.name}`);
-                // Add further actions here, like opening details or navigating
                 openOverlay();
 
-                // Create the task details HTML
+                // Create the task details HTML with inputs for editing
                 const taskDetailsHTML = `
                     <h1 class="header no-margin">Name</h1>
-                    <p id="task-name" class="value">${task.name}</p>
+                    <input id="task-name" class="input white-background" value="${task.name}" />
                     <h1 class="header">Description</h1>
-                    <p id="task-description" class="value">${task.description}</p>
+                    <textarea id="task-description" class="textarea-input white-background">${task.description}</textarea>
                     <div class="flex items-center">
                         <h1 class="header min-width">Due date</h1>
-                        <p class="value">${formattedDate}</p>
+                        <input id="task-date" class="input white-background" value="${formattedDate}" />
                     </div>
                     <div class="flex items-center">
                         <h1 class="header min-width">Status</h1>
-                        <p class="value status-value">
-                            <span class="circle pink-background"></span><span>${task.status}</span>
-                        </p>
+                        <select id="task-status" class="input white-background">
+                            <option value="To do" ${task.status === 'To do' ? 'selected' : ''}>To do</option>
+                            <option value="Doing" ${task.status === 'Doing' ? 'selected' : ''}>Doing</option>
+                            <option value="Done" ${task.status === 'Done' ? 'selected' : ''}>Done</option>
+                        </select>
                     </div>
+                    <button id="save-task-cta"
+                    style="margin-top: 1rem;" 
+                    class="button circle-button pink-background flex justify-center items-center">
+                    <iconify-icon
+                    icon="material-symbols:save"
+                    style="color: black"
+                    width="24"
+                    height="24"
+                    ></iconify-icon>
+                    </button>
+                    
                 `;
 
                 // Insert the task details HTML into the tasks-details div
                 const tasksDetailsDiv = document.getElementById("tasks-details");
                 tasksDetailsDiv.innerHTML = taskDetailsHTML;
 
-                // Add event listener to delete button
-                const deleteTaskButton = document.getElementById("delete-task-cta");
-                deleteTaskButton.addEventListener("click", () => {
-                    listItem.remove(); // Remove the corresponding li element
+                // Add click event listener to the save button
+                const saveButton = document.getElementById("save-task-cta");
+                saveButton.addEventListener("click", () => {
+                    const updatedName = document.getElementById("task-name").value;
+                    const updatedDescription = document.getElementById("task-description").value;
+                    const updatedDate = document.getElementById("task-date").value;
+                    const updatedStatus = document.getElementById("task-status").value;
+
+                    // Update the task item in the list using innerHTML
+                    listItem.innerHTML = `
+                        <li class="task-item">
+                            <button class="task-button">
+                                <div>
+                                    <p class="task-name">${updatedName}</p>
+                                    <span class="task-due-date">${updatedDate}</span>
+                                </div>
+                                <iconify-icon
+                                    icon="material-symbols:edit"
+                                    style="color:rgb(224, 154, 24);"
+                                    width="24"
+                                    height="24"
+                                    class="arrow-icon"
+                                ></iconify-icon>
+                                <!-- delete button -->
+                                <iconify-icon
+                                    icon="ic:round-delete"
+                                    style="color: red"
+                                    width="24"
+                                    height="24"
+                                    class="delete-icon"
+                                ></iconify-icon>
+                            </button>
+                        </li>
+                    `;
+
+                    // Re-add event listeners to the new elements
+                    const arrowIcon = listItem.querySelector(".arrow-icon");
+                    arrowIcon.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        console.log(`Arrow clicked for task: ${updatedName}`);
+                        openOverlay();
+                        // ...existing code for task details overlay...
+                    });
+
+                    const deleteIcon = listItem.querySelector(".delete-icon");
+                    deleteIcon.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        console.log(`Delete clicked for task: ${updatedName}`);
+                        listItem.remove();
+                    });
+
+                    // Move the task to the corresponding list view based on the updated status
+                    const newContainerID = statusMapping.listView[updatedStatus];
+                    const newTaskContainer = document.getElementById(newContainerID);
+                    if (newTaskContainer) {
+                        newTaskContainer.appendChild(listItem);
+                    }
                 });
+            });
+
+            // Add click event listener to the delete icon
+            const deleteIcon = listItem.querySelector(".delete-icon");
+            deleteIcon.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent parent button click
+                console.log(`Delete clicked for task: ${task.name}`);
+                listItem.remove(); 
             });
         });
     };
@@ -257,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchTasks();
 });
 
-// MOOD TRACKER
+// Mood Tracker
 document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("how-are-you-modal");
     const closeModalButton = document.getElementById("close-modal");
@@ -297,3 +390,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
   });
+
+// Add event listener to close button in view-task-overlay
+const closeViewTaskButton = document.getElementById("close-button-vt");
+closeViewTaskButton.addEventListener("click", () => {
+    const viewTaskOverlay = document.getElementById("view-task-overlay");
+    viewTaskOverlay.style.display = "none";
+});
