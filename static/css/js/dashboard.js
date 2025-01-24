@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Hide "No tasks found." message
             const noTasksMessage = taskContainer.querySelector(".no-tasks-message");
             if (noTasksMessage) {
-                noTasksMessage.style.display = "none";
+                noTasksMessage.remove();
             }
 
             // Create a new list item for the task
