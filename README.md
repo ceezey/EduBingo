@@ -1,7 +1,8 @@
+<header>
 # EduBingo
 
 **BSIT 2-2 - COBOL APP PROJECT (A.Y. 24-25)**
-
+</header>
 ## Purpose
 
 EduBingo is a project developed as part of the BSIT 2-2 curriculum: 
@@ -12,17 +13,17 @@ EduBingo is a project developed as part of the BSIT 2-2 curriculum:
 
 This project is developed by the following contributors:
 
-- PROJECT MANAGER           Makaila Nelrei C. Indaya
-- DESIGNER                  Lancilot Jannse S. Tibay
-- TECHNICAL DESIGNER        Denisse M. Victoria
-- DEVELOPER                 Cian Jake F. Francisco
-- DEVELOPER                 Eliniel V. Recio
-- SYSTEM ANALYST            Raphael Andrei G. Latoy
-- SYSTEM ANALYST            Cherry Mae O. Dampios
-- BUSINESS ANALYST          Nadya Sofia G. Bernabe
-- BUSINESS ANALYST          Eloisa Marie O. Afable
-- TECHNICAL WRITER          Gene Margarett A. Sy
-- TECHNICAL WRITER          Makaila Nelrei C. Indaya
+- Makaila Nelrei C. Indaya (PROJECT MANAGER)
+- Lancilot Jannse S. Tibay (TECHNICAL DESIGNER)
+- Denisse M. Victoria (TECHNICAL DESIGNER)
+- Cian Jake F. Francisco (DEVELOPER)
+- Eliniel V. Recio (DEVELOPER)
+- Raphael Andrei G. Latoy (SYSTEM ANALYST)
+- Cherry Mae O. Dampios (SYSTEM ANALYST)
+- Nadya Sofia G. Bernabe (BUSINESS ANALYST)
+- Eloisa Marie O. Afable (BUSINESS ANALYST)
+- Gene Margarett A. Sy (TECHNICAL WRITER)
+- Makaila Nelrei C. Indaya (TECHNICAL WRITER)
 
 ## Programming Languages Used
 
@@ -35,9 +36,7 @@ EduBingo is built using the following programming languages:
 - Python 
 
 ## Features
-
-![EduBingo Logo](/static/css/img/logo.png) 
-
+<img src=https://github.com/ceezey/EduBingo/blob/main/static/css/img/logo.png alt=logo width=300 align=right>
 - Interactive bingo game logic
 - User-tasks tracker
 - Educational content integration
