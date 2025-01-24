@@ -13,17 +13,28 @@ EduBingo is a project developed as part of the BSIT 2-2 curriculum:
 
 This project is developed by the following contributors:
 
-- Makaila Nelrei C. Indaya (PROJECT MANAGER)
-- Lancilot Jannse S. Tibay (TECHNICAL DESIGNER)
-- Denisse M. Victoria (TECHNICAL DESIGNER)
-- Cian Jake F. Francisco (DEVELOPER)
-- Eliniel V. Recio (DEVELOPER)
-- Raphael Andrei G. Latoy (SYSTEM ANALYST)
-- Cherry Mae O. Dampios (SYSTEM ANALYST)
-- Nadya Sofia G. Bernabe (BUSINESS ANALYST)
-- Eloisa Marie O. Afable (BUSINESS ANALYST)
-- Gene Margarett A. Sy (TECHNICAL WRITER)
-- Makaila Nelrei C. Indaya (TECHNICAL WRITER)
+**Makaila Nelrei C. Indaya**
+(PROJECT MANAGER)
+
+**Lancilot Jannse S. Tibay** 
+**Denisse M. Victoria** 
+(TECHNICAL DESIGNER)
+
+**Cian Jake F. Francisco** 
+**Eliniel V. Recio** 
+(DEVELOPER)
+
+**Raphael Andrei G. Latoy** 
+**Cherry Mae O. Dampios** 
+(SYSTEM ANALYST)
+
+**Nadya Sofia G. Bernabe** 
+**Eloisa Marie O. Afable** 
+(BUSINESS ANALYST)
+
+**Gene Margarett A. Sy** 
+**Makaila Nelrei C. Indaya**
+(TECHNICAL WRITER)
 
 ## Programming Languages Used
 
@@ -37,6 +48,7 @@ EduBingo is built using the following programming languages:
 
 ## Features
 <img src=https://github.com/ceezey/EduBingo/blob/main/static/css/img/logo.png alt=logo width=300 align=right>
+
 - Interactive bingo game logic
 - User-tasks tracker
 - Educational content integration
@@ -49,3 +61,7 @@ To get started with EduBingo, clone the repository and follow the setup instruct
 ```bash
 git clone https://github.com/ceezey/EduBingo.git
 cd EduBingo
+
+<footer>
+© 2025 EduBingo. All Rights Reserved.
+</footer>
