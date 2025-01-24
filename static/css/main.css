@@ -70,7 +70,7 @@ img {
   --radius-8: 8px;
 
   /* form elements */
-  --input-height: 45px;
+  --input-height: 60px;
 }
 
 /* general */
@@ -89,6 +89,22 @@ body {
   max-width: 1232px;
   margin-inline: auto;
   padding-inline: var(--space-16);
+}
+
+.tasks-list {
+  margin: 0; /* Remove unnecessary margins */
+  padding: 0; /* Remove unnecessary padding */
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Adjust the spacing between header and tasks */
+}
+
+.list-header {
+  margin-bottom: 0; /* Remove bottom margin */
+  padding-bottom: 0; /* Remove bottom padding */
 }
 
 /* utility classes */
@@ -208,15 +224,22 @@ body {
   resize: none;
 }
 
+.icon-container {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  gap: 10px; /* Add spacing between icons */
+}
+
 .status-select .arrow-icon {
   transform: rotate(270deg);
   /* move to top to fix alignment */
   margin-bottom: var(--space-8);
 }
 
-.arrow-icon {
+.icon {
   pointer-events: auto; /* Ensure click events work */
-  cursor: pointer;      /* Show pointer cursor on hover */
+  cursor: pointer;
+  font-size: 1.5rem; /* Adjust size */
 }
 
 .status-dropdown {

@@ -50,8 +50,22 @@ document.addEventListener("DOMContentLoaded", function () {
 // User logout
 document.addEventListener("DOMContentLoaded", function () {
     const signoutBttn = document.getElementById("signout");
-
     signoutBttn.addEventListener("click", function () {
+
+        fetch("/update_show_again", {
+            method: "PUT",
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === "success") {
+                    console.log("showAgain set to true on logout");
+                } else {
+                    console.error("Error updating showAgain:", data.message);
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            })
 
         // Retrieve email and password values
         const email = document.getElementById("email");

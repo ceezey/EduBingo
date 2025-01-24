@@ -1,4 +1,4 @@
-from . import TASK_FILE
+from . import TASK_FILE, MOOD_FILE
 from flask import (
     Blueprint, jsonify, request
 )
@@ -36,18 +36,19 @@ def addtask():
     except Exception as e:
         return jsonify({"status": "error","message": "An error occurred", "error": str(e)}), 500
 
-@nya.route("/change_status", methods=['POST'])
+@nya.route("/change_status", methods=['PUT'])
 def change_status():
     """
     Change the status of an existing task.
     """
     try:
         data = request.get_json()
-        taskid = data.get("taskid")
+        new_name = data.get("name")
+        new_desc = data.get("description")
+        new_date = data.get("date")
         new_status = data.get("status")
 
-        if not taskid or not new_status:
-            return jsonify({"status": "error", "message": "Task ID and new status are required"}), 400
+        # print(f"Task DATA: {new_name},{new_date},{new_desc},{new_status}")
 
         if new_status not in ['To do', 'Doing', 'Done']:
             return jsonify({"status": "error", "message": "Invalid status"}), 400
@@ -58,7 +59,9 @@ def change_status():
         with open(TASK_FILE, "r") as file:
             for line in file:
                 fields = line.strip().split(",")
-                if fields[0] == taskid:  # Find the task by taskid
+                if fields[1] == new_name:  # Find by name
+                    fields[2] = new_desc  # Update the description field
+                    fields[3] = new_date # Update the date field
                     fields[4] = new_status  # Update the status field
                     task_found = True
                     tasks.append(",".join(fields) + "\n")
@@ -72,7 +75,7 @@ def change_status():
         with open(TASK_FILE, "w") as file:
             file.writelines(tasks)
         
-        return jsonify({"status": "success", "message": "Task status updated successfully", "taskid": taskid, "new_status": new_status}), 200
+        return jsonify({"status": "success", "message": "Task status updated successfully", "new_name": new_name, "new_status": new_status}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
@@ -80,14 +83,11 @@ def change_status():
 @nya.route("/delete_task", methods=['DELETE'])
 def delete_task():
     """
-    Delete a task by its taskid.
+    Delete a task by its taskname.
     """
     try:
         data = request.get_json()
-        taskid = data.get("taskid")
-        
-        if not taskid:
-            return jsonify({"status": "error", "message": "Task ID is required"}), 400
+        taskname = data.get("taskname")
         
         tasks = []
         task_found = False
@@ -95,7 +95,7 @@ def delete_task():
         with open(TASK_FILE, "r") as file:
             for line in file:
                 fields = line.strip().split(",")
-                if fields[0] == taskid:  # Compare the taskid to the one in the file
+                if fields[1] == taskname:  # Compare the taskid to the one in the file
                     task_found = True
                     continue  # Skip the line if it's the task we want to delete
                 tasks.append(line)  # Keep all other tasks
@@ -132,7 +132,7 @@ def get_all_tasks():
                     "date": fields[3] if len(fields) > 3 else "N/A",
                     "status": fields[4] if len(fields) > 4 else "N/A",
                 }
-
+                # print(fields)
                 tasks.append(task)
 
         return jsonify({"status": "success", "tasks": tasks}), 200
@@ -147,15 +147,76 @@ def get_all_tasks():
 def save_mood():
     try:
         data = request.get_json()
+        date = data.get("date")
         mood = data.get("mood")
-        
+
+        print(date, mood)
+
         if not mood:
             return jsonify({"status": "error", "message": "Mood cannot be empty"}), 400
         
-        with open("MOOD-FILE.dat", "a") as file:
-            file.write(f"{mood}\n")
+        with open(MOOD_FILE, "a") as file:
+            file.write(f"{date},{mood},false\n")
         
         return jsonify({"status": "success", "message": "Mood saved successfully"}), 201
     
+    except Exception as e:
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
+    
+@nya.route("/show_again", methods=['GET'])
+def showAgain():
+    try:
+        # Read the last saved "showAgain" value from the file
+        with open(MOOD_FILE, "r") as file:
+            lines = file.readlines()
+
+        # If the file is empty, default to True
+        if not lines:
+            return jsonify({"showAgain": True}), 200
+
+        # Parse the last entry in the file
+        last_entry = lines[-1].strip().split(",")
+
+        # Ensure the last entry has at least 3 fields (date, mood, showAgain)
+        if len(last_entry) < 3:
+            print(show_again_value)
+            return jsonify({"showAgain": True}), 200  # Default to True if the last entry is malformed
+
+        # Determine the value of "showAgain" from the last entry
+        show_again_value = last_entry[2].lower() == "true"
+        print(show_again_value)
+        return jsonify({"showAgain": show_again_value}), 200
+
+    except FileNotFoundError:
+        # File not found, default to showing the modal
+        return jsonify({"showAgain": True}), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
+    
+@nya.route("/update_show_again", methods=['PUT'])
+def update_show_again():
+    try:
+        # Open the file and read the existing entries
+        with open(MOOD_FILE, "r") as file:
+            lines = file.readlines()
+        
+        if not lines:
+            return jsonify({"status": "error", "message": "No mood data found"}), 404
+
+        # Get the last entry and modify the "showAgain" value to True
+        last_entry = lines[-1].strip().split(",")
+        last_entry[2] = "true"  # Set "showAgain" to true
+        lines[-1] = ",".join(last_entry) + "\n"
+
+        # Write the updated data back to the file
+        with open(MOOD_FILE, "w") as file:
+            file.writelines(lines)
+
+        return jsonify({"status": "success", "message": "showAgain updated to true"}), 200
+
+    except FileNotFoundError:
+        return jsonify({"status": "error", "message": "Mood file not found"}), 404
+
     except Exception as e:
         return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
