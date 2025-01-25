@@ -88,32 +88,40 @@ def signout():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
     
-@user.route('/send-otp', methods=['POST'])
-def send_otp():
-    email = request.form['email']
-    otp = random.randint(100000, 999999)
-    
-    # Email sending logic
-    sender_email = "your-email@example.com"
-    sender_password = "your-password"
-    subject = "Your OTP Code"
-    body = f"Your OTP code is {otp}"
-    
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
-    
+@user.route('/change_pass', methods=['PUT'])
+def change_pass():
     try:
-        smtp_server = smtplib.SMTP('smtp.example.com', 587)
-        smtp_server.starttls()
-        smtp_server.login(sender_email, sender_password)
-        smtp_server.sendmail(sender_email, email, msg.as_string())
-        smtp_server.quit()
-        return redirect(url_for('otp'))
+        data = request.get_json()
+        email = data.get("email")
+        new_pass = data.get("new_pass")
+
+        # Validate email and password
+        if not email or not new_pass:
+            return jsonify({"status": "error", "message": "Email and new password cannot be empty."}), 400
+
+        updated = False
+        lines = []
+
+        # Read the file and update the password if email matches
+        with open(CREDENTIALS_FILE, "r") as file:
+            for line in file:
+                stored_email, stored_pass = line.strip().split(",")
+                if stored_email == email:
+                    lines.append(f"{email},{new_pass}\n")
+                    updated = True
+                else:
+                    lines.append(line)
+
+        # Write updated lines back to the file
+        if updated:
+            with open(CREDENTIALS_FILE, "w") as file:
+                file.writelines(lines)
+            return jsonify({"status": "success", "message": "Password changed successfully."}), 200
+        else:
+            return jsonify({"status": "error", "message": "Email not found."}), 404
+
     except Exception as e:
-        return jsonify({'message': 'Failed to send OTP', 'error': str(e)}), 500
+        return jsonify({"status": "error", "message": "An error occurred", "error": str(e)}), 500
 
 @user.route('/otp')
 def otp():

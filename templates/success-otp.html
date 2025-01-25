@@ -25,7 +25,7 @@
       >
         <img src="../static/css/img/logo.png" alt="Logo" class="logo-success-otp" />
         <h1 class="welcoming-title">Make sure to remember your password.</h1>
-        <form class="form" autocomplete="off" onsubmit="return validatePasswords()">
+        <form id="change-password-form" class="form" autocomplete="off">
           <label for="password" class="label">Password</label>
           <input
             type="password"
@@ -62,26 +62,7 @@
       <!-- right side -->
       <div class="right-column"></div>
     </div>
-    </body>
-    <script>
-      function validatePasswords() {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        const errorMessage = document.getElementById('error-message');
-        const successMessage = document.getElementById('success-message');
-
-        if (password !== confirmPassword) {
-          errorMessage.style.display = 'block';
-          successMessage.style.display = 'none';
-          return false;
-        } else {
-          errorMessage.style.display = 'none';
-          successMessage.style.display = 'block';
-          setTimeout(() => {
-            window.location.href = '/login.html';
-          }, 2000);
-          return false;
-        }
-      }
-    </script>
+    <!-- JS -->
+    <script src="../static/css/js/login.js"></script>
+  </body>
 </html>
