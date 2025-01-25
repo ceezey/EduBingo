@@ -28,7 +28,11 @@ const generateMockBoard = () => {
   
         // Add click event listener
         cell.addEventListener("click", () => {
-          if (board[x][y] !== "X") {
+          if (board[x][y] === "X") {
+            board[x][y] = ""; // Unmark the cell
+            cell.classList.remove("marked");
+            cell.innerText = "";
+          } else {
             board[x][y] = "X"; // Mark the cell
             cell.classList.add("marked");
             cell.innerText = "X";

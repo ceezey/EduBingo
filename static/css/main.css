@@ -282,20 +282,20 @@ body {
 
 .bingo-container {
   position: absolute;
-  top: 1;
-  left: 1;
+  top: 100;
+  left: 0;
   width: 10%;
   height: 48%;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 5px; /* Adjust the spacing between cells */
+  gap: 3px; /* Adjust the spacing between cells */
   pointer-events: none; /* Allow clicks to pass through the cells to the image */
   justify-content: center;
   align-items: center;
   /* min-height: 100vh; Full viewport height */
-  margin: 0;
-  margin-left: 505px;
+  margin-top: 128px;
+  margin-left: 265px;
 }
 
 .bingo-cell {
@@ -324,17 +324,13 @@ body {
   object-fit: cover;
 }
 
-.align-button {
-  display: flex;
-  margin-top: 500px;
-  padding: 10px 20px;
-}
-
 /* Style for the Check Win button */
 #check-win {
   position: absolute;
-  left: 570px;
-  bottom: 30px;
+  /* margin-left: 180px;
+  left: 570px; */
+  margin-bottom: 1px;
+  bottom: 10px; 
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
@@ -360,9 +356,10 @@ body {
 /* Style for the result message */
 #result-message {
   position: absolute;
-  left: 550px;
-  bottom: 1px; /* Space below the button */
-  /* right: 20px; Align with the button */
+  margin-bottom: 200px;
+  bottom: 50px; 
+  margin-right: 550px;
+  right: 20px; 
   font-size: 18px;
   font-weight: bold;
   color: #d9534f; /* Red for losing message */
