@@ -132,7 +132,14 @@
         <div id="board-view" class="board-view hide">
           <div class="board-container">
             <img src="../static/css/img/mascot.png" alt="Mascot" class="mascot" />
-            <img src="../static/css/img/board.png" alt="Board" class="board" />
+            <div class="bingo-card-container">
+              <div id="bingo-board" class="bingo-container"></div>
+              <img src="../static/css/img/board.png" alt="Board" class="board" />
+            </div> 
+            <div id="align-button">
+              <button id="check-win">Check Win</button>
+              <p id="result-message"></p> 
+            </div>
           </div>
         </div>
       </div>
@@ -351,6 +358,7 @@
     <script src="https://code.iconify.design/iconify-icon/1.0.5/iconify-icon.min.js"></script>
     <!-- js -->
     <script type="module" src="../static/css/js/main.js"></script>
+    <script type="module" src="../static/css/js/bingo.js"></script>
     <script type="module" src="../static/css/js/dashboard.js"></script>
     <script src="../static/css/js/login.js"></script>
   </body>
